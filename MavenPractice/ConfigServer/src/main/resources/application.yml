@@ -1,0 +1,17 @@
+server:
+  port: 8805
+
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          username: sujalgautam26@gmail.com
+          password: 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
+          uri: https://github.com/sujal-coder26/AusNepitProject
+          clone-on-start: true
+          default-label: main
+
+  application:
+    name: config-server
+

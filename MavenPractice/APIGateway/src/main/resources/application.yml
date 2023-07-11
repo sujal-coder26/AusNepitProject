@@ -1,0 +1,39 @@
+server:
+  port: 8804
+
+spring:
+  application:
+    name: api-gateway
+  config:
+    import: optional:configserver:http://localhost:8805
+
+  cloud:
+    config:
+      import-check:
+        enabled: false
+
+    gateway:
+      routes:
+        - id: USER-SERVICE
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/users/**
+
+        - id: HOTEL-SERVICE
+          uri: lb://HOTEL-SERVICE
+          predicates:
+            - Path=/hotels/**
+
+        - id: RATING-SERVICE
+          uri: lb://RATING-SERVICE
+          predicates:
+            - Path=/ratings/**
+
+#okta configuration
+okta:
+  oauth2:
+    issuer: https://dev-71520996.okta.com/oauth2/default
+    audience: api://default
+    client-id: 0oa9o7s9wf0W7nrHS5d7
+    client-secret: drK9gOsVYDV9aAhqcdNp8qZWj993V0u_01j3xMHO
+    scopes: openid, profile, email, offline_access

@@ -1,0 +1,95 @@
+server:
+  port: 8800
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/microservices?createDatabaseIfNotExist=true&serverTimezone=UTC
+    username: root
+    password: Sujal
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://dev-71520996.okta.com/oauth2/default
+      client:
+        registration:
+          my-internal-client:
+            provider: okta
+            authorization-grant-type: client_credentials
+            scope: internal
+            client-id: 0oa9o7s9wf0W7nrHS5d7
+            client-secret: drK9gOsVYDV9aAhqcdNp8qZWj993V0u_01j3xMHO
+        provider:
+          okta:
+            issuer-uri: https://dev-71520996.okta.com/oauth2/default
+
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+
+  cloud:
+    config:
+      import-check:
+        enabled: false
+
+  config:
+    import: optional:configserver:http://localhost:8805
+
+  application:
+    name: user-service
+
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health
+
+  endpoint:
+    health:
+      show-details: always
+
+resilience4j:
+#  circuitbreaker:
+  ##    instances:
+  ##      ratingHotelBreaker:
+  ##        registerHealthIndicator: true
+  ##        eventConsumerBufferSize: 10
+  ##        failureRateThreshold: 50
+  ##        minimumNumberOfCalls: 5
+  ##        automaticTransitionFromOpenToHalfOpenEnabled: true
+  ##        waitDurationInOpenState: 6s
+  ##        permittedNumberOfCallsInHalfOpenState: 3
+  ##        slidingWindowSize: 10
+  ##        slidingWindowType: COUNT_BASED
+  ##
+  ##  retry:
+  ##    instances:
+  ##      ratingHotelService:
+  ##        max-attempts: 3
+  ##        wait-duration: 5s
+
+  ratelimiter:
+    instances:
+      userRateLimiter:
+        limit-refresh-period: 4s
+        limit-for-period: 2
+        timeout-duration: 2s
+
+okta:
+  oauth2:
+    issuer: https://dev-71520996.okta.com/oauth2/default
+    audience: api://default
+    client-id: 0oa9o7s9wf0W7nrHS5d7
+    client-secret: drK9gOsVYDV9aAhqcdNp8qZWj993V0u_01j3xMHO
+
+
